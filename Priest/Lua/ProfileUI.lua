@@ -1,12 +1,19 @@
-local _G = _G
-local Action = _G.Action
-local A = Action
-local TMW = _G.TMW
+local _G                         = _G
+local Action                     = _G.Action
+local A                          = Action
+local CONST                      = A.Const
+local ACTION_CONST_PRIEST_SHADOW = CONST.PRIEST_SHADOW
+local TMW                        = _G.TMW
 local Create = Action.Create
+
+-- Defs I might need later
+
 --local Player = Action.Player
 --local Listener = Action.Listener
 --local GetToggle = Action.GetToggle
 --local GetSpellTexture = TMW.GetSpellTexture
+
+A.Data.ProfileEnabled[A.CurrentProfile] = true 
 
 A.Data.ProfileUI = {
     DateTime = "recently updated",
@@ -94,13 +101,4 @@ Action[ACTION_CONST_PRIEST_SHADOW] = {
     -- Racials
     QuakingPalm = Create({ Type = "Spell", ID = 107719 }),
 }
-
-A.Data.ProfileEnabled[A.CurrentProfile] = true 
-
-
-
-
-
-
-
 

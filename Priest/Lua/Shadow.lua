@@ -1,8 +1,13 @@
-local _G, setmetatable  = _G, setmetatable
-local TMW               = _G.TMW
-local Action            = _G.Action
-local unit              = Action.Unit
-local target            = "target"
+local _G, setmetatable           = _G, setmetatable
+local TMW                        = _G.TMW
+local Action                     = _G.Action
+local CONST                      = Action.CONST
+local ACTION_CONST_PRIEST_SHADOW = CONST.PRIEST_SHADOW
+local unit                       = Action.Unit
+local target                     = "target"
+
+-- Defs i might need later
+
 --local CNDT              = TMW.CNDT
 --local Env               = CNDT.Env
 --local Player            = Action.Player
