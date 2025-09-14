@@ -1,4 +1,4 @@
-local _G, setmetatable           = _G, setmetatable
+local _G, setmetatable = _G, setmetatable
 local TMW = _G.TMW
 local Action = _G.Action
 local Create = Action.Create
@@ -21,7 +21,6 @@ local CombatLogGetCurrentEventInfo = _G.CombatLogGetCurrentEventInfo
 local UnitGUID = _G.UnitGUID
 local player = "player"
 local target = "target"
-
 Action[Action.PlayerClass] = {
     BindingHeal = Create({ Type = "Spell", ID = 32546 }),
     DispelMagic = Create({ Type = "Spell", ID = 528 }),
@@ -47,7 +46,7 @@ Action[Action.PlayerClass] = {
     SWD = Create({ Type = "Spell", ID = 32379 }),
     SWP = Create({ Type = "Spell", ID = 589 }),
     ShadowFiend = Create({ Type = "Spell", ID = 34433 }),
-    Smite = Create({ Type = "Spell", ID = 585 }),   
+    Smite = Create({ Type = "Spell", ID = 585 }),
     MindFlay = Create({ Type = "Spell", ID = 15407 }),
     MindBlast = Create({ Type = "Spell", ID = 8092 }),
     ShadowForm = Create({ Type = "Spell", ID = 15473 }),
@@ -59,7 +58,7 @@ Action[Action.PlayerClass] = {
     VampEmbrace = Create({ Type = "Spell", ID = 15286 }),
     DevouringPlague = Create({ Type = "Spell", ID = 2944 }),
     VoidShift = Create({ Type = "Spell", ID = 142723 }),
-    ShadowOrbs = Create({ Type = "Spell", ID = 95740 }),    
+    ShadowOrbs = Create({ Type = "Spell", ID = 95740 }),
     VoidTendrils = Create({ Type = "Spell", ID = 108920 }),
     Psyfiend = Create({ Type = "Spell", ID = 108921 }),
     DominateMind = Create({ Type = "Spell", ID = 605 }),
@@ -71,7 +70,7 @@ Action[Action.PlayerClass] = {
     Solace = Create({ Type = "Spell", ID = 139139 }),
     DesperatePrayer = Create({ Type = "Spell", ID = 19236 }),
     SpectralGuise = Create({ Type = "Spell", ID = 112833 }),
-    AngelicBulwark = Create({ Type = "Spell", ID = 108945 }),    
+    AngelicBulwark = Create({ Type = "Spell", ID = 108945 }),
     TwistOfFate = Create({ Type = "Spell", ID = 109142 }),
     PowerInfusion = Create({ Type = "Spell", ID = 10060 }),
     DivineInsight = Create({ Type = "Spell", ID = 109175 }),
@@ -99,15 +98,11 @@ Action[Action.PlayerClass] = {
     AncientHysteria = Create({ Type = "Spell", ID = 90355 }),
     SkullBanner = Create({ Type = "Spell", ID = 114203 }),
 }
-
 local A = setmetatable(Action[Action.PlayerClass], { __index = Action })
-
 local swaps = 0
 local lastEnemyCount = 0
-
 A[1] = nil
 A[2] = nil
-
 local function SingleTargetRotation(icon, unit)
     if not A.IsUnitEnemy(unit) then
         return false
@@ -131,7 +126,6 @@ local function SingleTargetRotation(icon, unit)
     local isCastingVT = Action.Unit("player"):IsCasting() and Action.Unit("player"):IsCasting(A.VampTouch.ID)
     local channelingSpell = Action.Player:IsChanneling()
     local isChannelingMF = channelingSpell == GetSpellInfo(A.MindFlay.ID)
-    
     if dpRemain == 0 and insanityRemain == 0 and A.PowerInfusion:IsReady(unit) and A.PowerInfusion:IsSpellInRange(unit) then
         if isChannelingMF then
             return A:Show(icon, Action.Const.STOPCAST)
@@ -158,7 +152,7 @@ local function SingleTargetRotation(icon, unit)
     end
     if dpRemain == 0 and insanityRemain == 0 and A.SWP:IsSpellInRange(unit) then
         if not swpRemain or swpRemain <= 3 then
-            if isChannelingMF then  
+            if isChannelingMF then
                 return A:Show(icon, Action.Const.STOPCAST)
             end
             return A.SWP:Show(icon)
@@ -207,7 +201,6 @@ local function SingleTargetRotation(icon, unit)
     end
     return false
 end
-
 local function AoERotation(icon, unit)
     if not A.IsUnitEnemy(unit) then
         return false
@@ -221,7 +214,6 @@ local function AoERotation(icon, unit)
     if not A.MindSear:IsSpellInRange(unit) then
         return false
     end
-
     local nearbyEnemies = Action.MultiUnits:GetByRangeInCombat(40)
     if nearbyEnemies ~= lastEnemyCount then
         swaps = 0
@@ -246,9 +238,8 @@ local function AoERotation(icon, unit)
             return A.SWP:Show(icon)
         end
         if needsVT and currentSWP and enemiesMissingVT > 0 and A.VampTouch:IsReady(unit) and A.VampTouch:IsSpellInRange(unit) and not isCastingVT then
-            return A.VampTouch:Show(icon)            
+            return A.VampTouch:Show(icon)
         end
-        
         local currentTargetComplete = (not needsSWP) and (not needsVT)
         local totalTargetsNeedingDoTs = math.max(enemiesMissingSWP, enemiesMissingVT)
         if currentTargetComplete and totalTargetsNeedingDoTs > 0 and swaps < totalTargetsNeedingDoTs then
@@ -268,7 +259,6 @@ local function AoERotation(icon, unit)
     end
     return false
 end
-
 local function BuffCheck(icon)
     local isInShadowForm = Action.Unit("player"):HasBuffs(A.ShadowForm.ID) > 0
     local hasInnerFire = Action.Unit("player"):HasBuffs(A.InnerFire.ID) > 0
@@ -284,44 +274,34 @@ local function BuffCheck(icon)
     end
     return false
 end
-
 local function MovementCheck(icon)
     if Action.Player:IsMoving() and A.AngelicFeather:IsReady() then
         return A.AngelicFeather:Show(icon)
     end
     return false
 end
-
 local function DefensiveCheck(icon)
     local playerHP = Action.Unit("player"):HealthPercent()
     local desperatePrayerHP = A.GetToggle(2, "DesperatePrayerHP")
     local dispersionHP = A.GetToggle(2, "DispersionHP")
     local useDispersion = A.GetToggle(2, "UseDispersion")
-    
-    -- Emergency healing (highest priority)
     if playerHP <= desperatePrayerHP and A.DesperatePrayer:IsReady() then
         return A.DesperatePrayer:Show(icon)
     end
-    
-    -- Defensive cooldowns (highest priority)
     if useDispersion and playerHP <= dispersionHP and A.Dispersion:IsReady() then
         return A.Dispersion:Show(icon)
     end
-    
     return false
 end
-
 A[3] = function(icon)
     local buffs = BuffCheck(icon)
     if buffs then
         return buffs
     end
-    
     local defensive = DefensiveCheck(icon)
     if defensive then
         return defensive
     end
-    
     local movement = MovementCheck(icon)
     if movement then
         return movement
